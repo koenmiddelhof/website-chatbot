@@ -3,8 +3,13 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+import openai
+import os
 
+# Zet je OpenAI API key
 # 1️⃣ Maak een FastAPI app aan
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 app = FastAPI()
 
 # 2️⃣ CORS instellen
@@ -29,5 +34,14 @@ def index():
 # 5️⃣ Eenvoudig chat endpoint
 @app.get("/chat")
 def chat(message: str):
-    # Voor nu sturen we gewoon een fake antwoord terug
-    return {"response": f"Je zei: {message}"}
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # of gpt-4 als je toegang hebt
+            messages=[{"role": "user", "content": message}],
+            max_tokens=150
+        )
+        answer = response['choices'][0]['message']['content']
+        return {"response": answer}
+    except Exception as e:
+        return {"response": "Er ging iets mis met de AI: " + str(e)}
+
