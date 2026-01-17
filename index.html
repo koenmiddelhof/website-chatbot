@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chatbot</title>
+    <style>
+        /* Chat-icoon rechtsonder */
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0078D7;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Chatbox (verberg standaard) */
+        #chat-box {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            background: white;
+            display: none;
+            flex-direction: column;
+        }
+
+        /* Berichten scrollen */
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        /* Inputbox onderin */
+        #input-box {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        #input-box input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+        }
+        #input-box button {
+            padding: 10px;
+            background: #0078D7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Chat icoon -->
+<div id="chat-icon">💬</div>
+
+<!-- Chatbox -->
+<div id="chat-box">
+    <div id="messages"></div>
+    <div id="input-box">
+        <input type="text" id="user-input" placeholder="Typ hier...">
+        <button onclick="sendMessage()">Stuur</button>
+    </div>
+</div>
+
+<!-- JS script -->
+<script src="static/script.js"></script>
+</body>
+</html>
