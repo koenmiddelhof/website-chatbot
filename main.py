@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
 
+chat_memory = {}
+
 # Zet je OpenAI API key
 # 1️⃣ Maak een FastAPI app aan
 
@@ -39,18 +41,36 @@ Je verzint geen informatie."""
 
 # 5️⃣ Eenvoudig chat endpoint
 @app.get("/chat")
-def chat(message: str):
+def chat(message: str, session_id: str):
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # of gpt-4 als je toegang hebt
-            messages = [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": message}
-            ],
-            max_tokens=150
+        if session_id not in chat_memory:
+            chat_memory[session_id] = []
+
+        # Voeg nieuwe user message toe
+        chat_memory[session_id].append(
+            {"role": "user", "content": message}
         )
-        answer = response['choices'][0]['message']['content']
+
+        # Bouw volledige message history
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT}
+        ] + chat_memory[session_id]
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            max_tokens=200
+        )
+
+        answer = response["choices"][0]["message"]["content"]
+
+        # Sla AI antwoord ook op
+        chat_memory[session_id].append(
+            {"role": "assistant", "content": answer}
+        )
+
         return {"response": answer}
+
     except Exception as e:
-        return {"response": "Er ging iets mis met de AI: " + str(e)}
+        return {"response": "Er ging iets mis: " + str(e)}
 

@@ -9,6 +9,13 @@ chatIcon.onclick = () => {
     chatBox.style.display = chatBox.style.display === "none" ? "flex" : "none";
 };
 
+// 🌟 Session ID aanmaken of ophalen
+let sessionId = localStorage.getItem("session_id");
+if (!sessionId) {
+    sessionId = crypto.randomUUID(); // unieker ID voor elke gebruiker
+    localStorage.setItem("session_id", sessionId);
+}
+
 // Bericht versturen naar backend
 async function sendMessage() {
     const message = userInput.value;
@@ -21,14 +28,22 @@ async function sendMessage() {
 
     userInput.value = "";
 
-    // Verstuur naar backend
-    const response = await fetch(`/chat?message=${encodeURIComponent(message)}`);
-    const data = await response.json();
+    try {
+        // Verstuur naar backend met session_id
+        const response = await fetch(`/chat?message=${encodeURIComponent(message)}&session_id=${sessionId}`);
+        const data = await response.json();
 
-    // Toon bot antwoord
-    const aiMsg = document.createElement("div");
-    aiMsg.textContent = "Bot: " + data.response;
-    messages.appendChild(aiMsg);
+        // Toon bot antwoord
+        const aiMsg = document.createElement("div");
+        aiMsg.textContent = "Bot: " + data.response;
+        messages.appendChild(aiMsg);
 
-    messages.scrollTop = messages.scrollHeight;
+        // Scroll naar beneden
+        messages.scrollTop = messages.scrollHeight;
+    } catch (err) {
+        const errorMsg = document.createElement("div");
+        errorMsg.textContent = "Bot: Er ging iets mis met de verbinding.";
+        messages.appendChild(errorMsg);
+    }
 }
+
