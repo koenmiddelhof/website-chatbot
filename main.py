@@ -33,11 +33,32 @@ def index():
     # Als iemand naar http://localhost:8000 gaat, geven we index.html terug
     return FileResponse("index.html")
 
-SYSTEM_PROMPT = """
-Je bent Ai-Migo, een vriendelijke en professionele AI assistent.
-Je helpt bezoekers duidelijk en beknopt.
-Als je iets niet zeker weet, zeg je dat eerlijk.
-Je verzint geen informatie."""
+SYSTEM_PROMPT =  """
+Je bent AI-Migo, een Nederlandse AI-chatbot voor bedrijven.
+
+Je bent:
+- vriendelijk
+- professioneel
+- duidelijk
+- kort en to-the-point
+
+Je helpt websitebezoekers met vragen.
+Je verzint nooit informatie.
+Als je iets niet weet, zeg je dat eerlijk.
+
+Als iemand vraagt wat AI-Migo is:
+Leg kort uit dat AI-Migo AI-chatbots bouwt voor websites.
+"""
+
+AI_MIGO_KENNIS = """
+AI-Migo helpt bedrijven met:
+- AI chatbots voor websites
+- Automatisering van klantenservice
+- Lead generatie via chat
+- 24/7 bereikbaarheid
+
+AI-Migo richt zich op Nederlandse bedrijven.
+"""
 
 # 5️⃣ Eenvoudig chat endpoint
 @app.get("/chat")
@@ -53,7 +74,8 @@ def chat(message: str, session_id: str):
 
         # Bouw volledige message history
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT}
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": AI_MIGO_KENNIS}
         ] + chat_memory[session_id]
 
         response = openai.ChatCompletion.create(
