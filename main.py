@@ -31,13 +31,22 @@ def index():
     # Als iemand naar http://localhost:8000 gaat, geven we index.html terug
     return FileResponse("index.html")
 
+SYSTEM_PROMPT = """
+Je bent Ai-Migo, een vriendelijke en professionele AI assistent.
+Je helpt bezoekers duidelijk en beknopt.
+Als je iets niet zeker weet, zeg je dat eerlijk.
+Je verzint geen informatie."""
+
 # 5️⃣ Eenvoudig chat endpoint
 @app.get("/chat")
 def chat(message: str):
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # of gpt-4 als je toegang hebt
-            messages=[{"role": "user", "content": message}],
+            messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": message}
+            ],
             max_tokens=150
         )
         answer = response['choices'][0]['message']['content']
