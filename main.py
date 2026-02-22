@@ -1,10 +1,5 @@
 # main.py
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-import openai
-import os
+-
 
 chat_memory = {}
 
